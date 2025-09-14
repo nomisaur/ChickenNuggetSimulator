@@ -2,8 +2,8 @@
 */obj/
 **/bin/
 **/obj/
+*/bin/*
+*/obj/*
+*/bin/**/*
+*/obj/**/*
 */.clj-kondo/
-ChickenNuggetSimulator.Android/.lsp/.cache
-ChickenNuggetSimulator.Android/obj/Debug/net8.0-android
-ChickenNuggetSimulator.Android/obj/Debug/net8.0-android/ChickenNuggetSimulator.Android.AssemblyInfo.cs
-ChickenNuggetSimulator.Android/obj/Debug/net8.0-android/ChickenNuggetSimulator.Android.AssemblyInfoInputs.cache
