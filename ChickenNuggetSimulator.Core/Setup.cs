@@ -5,6 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 public class Setup : Game
 {
+    private int vHieght = 1920;
+    private int vWidth = 1080;
+
+    public Rectangle RenderDestination;
+
+    private bool isResizing = false;
     internal static Setup s_instance;
 
     /// <summary>
@@ -21,6 +27,8 @@ public class Setup : Game
     /// Gets the graphics device used to create graphical resources and perform primitive rendering.
     /// </summary>
     public static new GraphicsDevice GraphicsDevice { get; private set; }
+
+    public static RenderTarget2D RenderTarget { get; private set; }
 
     /// <summary>
     /// Gets the sprite batch used for all 2D rendering.
@@ -40,13 +48,7 @@ public class Setup : Game
     /// <param name="height">The initial height, in pixels, of the game window.</param>
     /// <param name="fullScreen">Indicates if the game should start in fullscreen mode.</param>
     /// <param name="orientation">The initial orientation of the game window.</param>
-    public Setup(
-        string title,
-        int width,
-        int height,
-        bool fullScreen,
-        DisplayOrientation orientation
-    )
+    public Setup(string title, bool fullScreen, DisplayOrientation orientation)
     {
         // Ensure that multiple cores are not created.
         if (s_instance != null)
@@ -61,10 +63,13 @@ public class Setup : Game
         Graphics = new GraphicsDeviceManager(this);
 
         // Set the graphics defaults.
-        Graphics.PreferredBackBufferWidth = width;
-        Graphics.PreferredBackBufferHeight = height;
+        Graphics.PreferredBackBufferWidth = 480;
+        Graphics.PreferredBackBufferHeight = 800;
         Graphics.SupportedOrientations = orientation;
         Graphics.IsFullScreen = fullScreen;
+        Window.AllowUserResizing = true;
+
+        Window.ClientSizeChanged += OnClientSizeChanged;
 
         // Apply the graphic presentation changes.
 
@@ -85,6 +90,11 @@ public class Setup : Game
         IsMouseVisible = true;
     }
 
+    protected override void LoadContent()
+    {
+        base.LoadContent();
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -92,8 +102,38 @@ public class Setup : Game
         // Set the core's graphics device to a reference of the base Game's
         // graphics device.
         GraphicsDevice = base.GraphicsDevice;
+        RenderTarget = new RenderTarget2D(GraphicsDevice, vWidth, vHieght);
+        CalculateRenderDestination();
 
         // Create the sprite batch instance.
         SpriteBatch = new SpriteBatch(GraphicsDevice);
+    }
+
+    private void OnClientSizeChanged(object sender, EventArgs e)
+    {
+        if (
+            !isResizing
+            && GraphicsDevice != null
+            && Window.ClientBounds.Width > 0
+            && Window.ClientBounds.Height > 0
+        )
+        {
+            isResizing = true;
+            CalculateRenderDestination();
+            isResizing = false;
+        }
+    }
+
+    private void CalculateRenderDestination()
+    {
+        Point size = GraphicsDevice.Viewport.Bounds.Size;
+        float scaleX = (float)size.X / vWidth;
+        float scaleY = (float)size.Y / vHieght;
+        float scale = Math.Max(scaleX, scaleY);
+
+        RenderDestination.Width = (int)(vWidth * scale);
+        RenderDestination.Height = (int)(vHieght * scale);
+        RenderDestination.X = (size.X - RenderDestination.Width) / 2;
+        RenderDestination.Y = (size.Y - RenderDestination.Height) / 2;
     }
 }
