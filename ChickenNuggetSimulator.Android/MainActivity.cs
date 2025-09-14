@@ -2,10 +2,8 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
-
-using Microsoft.Xna.Framework;
-
 using ChickenNuggetSimulator.Core;
+using Microsoft.Xna.Framework;
 
 namespace ChickenNuggetSimulator.Android
 {
@@ -24,8 +22,10 @@ namespace ChickenNuggetSimulator.Android
         Theme = "@style/Theme.Splash",
         AlwaysRetainTaskState = true,
         LaunchMode = LaunchMode.SingleInstance,
-        ScreenOrientation = ScreenOrientation.SensorLandscape,
-        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden
+        ScreenOrientation = ScreenOrientation.Portrait,
+        ConfigurationChanges = ConfigChanges.Orientation
+            | ConfigChanges.Keyboard
+            | ConfigChanges.KeyboardHidden
     )]
     public class MainActivity : AndroidGameActivity
     {

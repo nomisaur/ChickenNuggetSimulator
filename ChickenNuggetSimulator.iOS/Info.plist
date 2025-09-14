@@ -6,8 +6,7 @@
 	<string>12.2</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>ChickenNuggetSimulator</string>

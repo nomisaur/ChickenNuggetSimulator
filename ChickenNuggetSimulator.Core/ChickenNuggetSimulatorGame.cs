@@ -42,14 +42,14 @@ namespace ChickenNuggetSimulator.Core
         public ChickenNuggetSimulatorGame()
         {
             graphicsDeviceManager = new GraphicsDeviceManager(this);
-
+            graphicsDeviceManager.SupportedOrientations = DisplayOrientation.Portrait;
+            graphicsDeviceManager.PreferredBackBufferWidth = 360;
+            graphicsDeviceManager.PreferredBackBufferHeight = 640;
             // Share GraphicsDeviceManager as a service.
             Services.AddService(typeof(GraphicsDeviceManager), graphicsDeviceManager);
+            graphicsDeviceManager.ApplyChanges();
 
             Content.RootDirectory = "Content";
-
-            // Configure screen orientations.
-            graphicsDeviceManager.SupportedOrientations = DisplayOrientation.Portrait;
         }
 
         /// <summary>
