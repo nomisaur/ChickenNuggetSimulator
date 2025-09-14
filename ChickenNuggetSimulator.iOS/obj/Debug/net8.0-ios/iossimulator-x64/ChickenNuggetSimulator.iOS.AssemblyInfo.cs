@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChickenNuggetSimulator.iOS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a6ff3af271c341307c626a4aea1496b256b18323")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChickenNuggetSimulator.iOS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChickenNuggetSimulator.iOS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
