@@ -5,10 +5,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 public class Setup : Game
 {
-    private int vHieght = 1920;
-    private int vWidth = 1080;
+    // The desired resolution.
+    public readonly int Width = 1080;
+    public readonly int Height = 1920;
 
-    public Rectangle RenderDestination;
+    // The rendered resolution.
+    public int vWidth = 1080;
+    public int vHeight = 1920;
+
+    private bool letterboxed = false;
+
+    public Matrix screenScaleMatrix;
+    public Viewport Viewport;
 
     private bool isResizing = false;
     internal static Setup s_instance;
@@ -27,8 +35,6 @@ public class Setup : Game
     /// Gets the graphics device used to create graphical resources and perform primitive rendering.
     /// </summary>
     public static new GraphicsDevice GraphicsDevice { get; private set; }
-
-    public static RenderTarget2D RenderTarget { get; private set; }
 
     /// <summary>
     /// Gets the sprite batch used for all 2D rendering.
@@ -63,8 +69,10 @@ public class Setup : Game
         Graphics = new GraphicsDeviceManager(this);
 
         // Set the graphics defaults.
-        Graphics.PreferredBackBufferWidth = 480;
-        Graphics.PreferredBackBufferHeight = 800;
+        Graphics.PreferredBackBufferWidth = 540;
+        Graphics.PreferredBackBufferHeight = 960;
+        // Graphics.PreferredBackBufferWidth = Width;
+        // Graphics.PreferredBackBufferHeight = Height;
         Graphics.SupportedOrientations = orientation;
         Graphics.IsFullScreen = fullScreen;
         Window.AllowUserResizing = true;
@@ -102,8 +110,7 @@ public class Setup : Game
         // Set the core's graphics device to a reference of the base Game's
         // graphics device.
         GraphicsDevice = base.GraphicsDevice;
-        RenderTarget = new RenderTarget2D(GraphicsDevice, vWidth, vHieght);
-        CalculateRenderDestination();
+        UpdateScreenScaleMatrix();
 
         // Create the sprite batch instance.
         SpriteBatch = new SpriteBatch(GraphicsDevice);
@@ -111,29 +118,51 @@ public class Setup : Game
 
     private void OnClientSizeChanged(object sender, EventArgs e)
     {
-        if (
-            !isResizing
-            && GraphicsDevice != null
-            && Window.ClientBounds.Width > 0
-            && Window.ClientBounds.Height > 0
-        )
+        if (Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
         {
-            isResizing = true;
-            CalculateRenderDestination();
-            isResizing = false;
+            if (!isResizing)
+            {
+                isResizing = true;
+                UpdateScreenScaleMatrix();
+                isResizing = false;
+            }
         }
     }
 
-    private void CalculateRenderDestination()
+    private void UpdateScreenScaleMatrix()
     {
-        Point size = GraphicsDevice.Viewport.Bounds.Size;
-        float scaleX = (float)size.X / vWidth;
-        float scaleY = (float)size.Y / vHieght;
-        float scale = Math.Max(scaleX, scaleY);
+        // size of actual screen
+        float screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        float screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
 
-        RenderDestination.Width = (int)(vWidth * scale);
-        RenderDestination.Height = (int)(vHieght * scale);
-        RenderDestination.X = (size.X - RenderDestination.Width) / 2;
-        RenderDestination.Y = (size.Y - RenderDestination.Height) / 2;
+        // calculate virtual resolution based on aspect ratio of actual screen
+        if (
+            letterboxed
+                ? screenWidth / Width > screenHeight / Height
+                : screenWidth / Width < screenHeight / Height
+        )
+        {
+            float aspect = screenHeight / Height;
+            vWidth = (int)(aspect * Width);
+            vHeight = (int)screenHeight;
+        }
+        else
+        {
+            float aspect = screenWidth / Width;
+            vWidth = (int)screenWidth;
+            vHeight = (int)(aspect * Height);
+        }
+
+        screenScaleMatrix = Matrix.CreateScale(vWidth / (float)Width);
+
+        Viewport = new Viewport
+        {
+            X = (int)(screenWidth / 2 - vWidth / 2),
+            Y = (int)(screenHeight / 2 - vHeight / 2),
+            Width = vWidth,
+            Height = vHeight,
+            MinDepth = 0,
+            MaxDepth = 1,
+        };
     }
 }

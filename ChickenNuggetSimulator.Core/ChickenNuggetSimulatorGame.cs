@@ -16,6 +16,7 @@ namespace ChickenNuggetSimulator.Core;
 public class ChickenNuggetSimulatorGame : Setup
 {
     private Texture2D chicken;
+    private Texture2D background;
 
     /// <summary>
     /// Indicates if the game is running on a mobile platform.
@@ -65,6 +66,7 @@ public class ChickenNuggetSimulatorGame : Setup
     {
         base.LoadContent();
         chicken = Content.Load<Texture2D>("Assets/Chicken/chicken");
+        background = Content.Load<Texture2D>("Assets/Chicken/coop");
     }
 
     /// <summary>
@@ -97,32 +99,46 @@ public class ChickenNuggetSimulatorGame : Setup
     {
         // setup
         GraphicsDevice.Clear(Color.Green);
-        GraphicsDevice.SetRenderTarget(RenderTarget);
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        GraphicsDevice.Viewport = Viewport;
+        SpriteBatch.Begin(
+            transformMatrix: screenScaleMatrix,
+            samplerState: SamplerState.LinearClamp
+        );
 
         // Draw here
         SpriteBatch.Draw(
+            background,
+            Vector2.Zero,
+            new Rectangle(200, 200, 540, 960),
+            Color.White,
+            0.0f,
+            Vector2.Zero,
+            4.0f,
+            SpriteEffects.None,
+            0.0f
+        );
+
+        SpriteBatch.Draw(
             chicken, // texture
             new Vector2( // position
-                (Window.ClientBounds.Width * 0.5f) - (chicken.Width * 0.5f * 0.125f),
-                (Window.ClientBounds.Height * 0.5f) - (chicken.Height * 0.5f * 0.125f)
+                (Width * 0.5f) - (chicken.Width * 0.5f * 0.5f),
+                (Height * 0.5f) - (chicken.Height * 0.5f * 0.5f)
             ),
             null, // sourceRectangle
-            // new Rectangle(1400, 1400, 50, 50), // sourceRectangle
             Color.White, // color
             0.0f, // rotation
             Vector2.Zero, // origin
-            0.125f, // scale
+            0.5f, // scale
             SpriteEffects.None, // effects
             0.0f
         );
 
         // end
         SpriteBatch.End();
-        GraphicsDevice.SetRenderTarget(null);
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        SpriteBatch.Draw(RenderTarget, RenderDestination, Color.White);
-        SpriteBatch.End();
+        // GraphicsDevice.SetRenderTarget(null);
+        // SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        // SpriteBatch.Draw(RenderTarget, RenderDestination, Color.White);
+        // SpriteBatch.End();
         base.Draw(gameTime);
     }
 }
