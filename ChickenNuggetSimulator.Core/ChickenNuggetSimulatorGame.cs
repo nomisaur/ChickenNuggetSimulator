@@ -13,14 +13,9 @@ namespace ChickenNuggetSimulator.Core
     /// The main class for the game, responsible for managing game components, settings,
     /// and platform-specific configurations.
     /// </summary>
-    public class ChickenNuggetSimulatorGame : Game
+    public class ChickenNuggetSimulatorGame : Setup
     {
         private Texture2D chicken;
-
-        // Resources for drawing.
-        private GraphicsDeviceManager graphicsDeviceManager;
-
-        private SpriteBatch spriteBatch;
 
         /// <summary>
         /// Indicates if the game is running on a mobile platform.
@@ -40,17 +35,7 @@ namespace ChickenNuggetSimulator.Core
         /// screen manager for screen transitions.
         /// </summary>
         public ChickenNuggetSimulatorGame()
-        {
-            graphicsDeviceManager = new GraphicsDeviceManager(this);
-            graphicsDeviceManager.SupportedOrientations = DisplayOrientation.Portrait;
-            graphicsDeviceManager.PreferredBackBufferWidth = 360;
-            graphicsDeviceManager.PreferredBackBufferHeight = 640;
-            // Share GraphicsDeviceManager as a service.
-            Services.AddService(typeof(GraphicsDeviceManager), graphicsDeviceManager);
-            graphicsDeviceManager.ApplyChanges();
-
-            Content.RootDirectory = "Content";
-        }
+            : base("Chicken Nugget Simulator", 360, 640, false, DisplayOrientation.Portrait) { }
 
         /// <summary>
         /// Initializes the game, including setting up localization and adding the
@@ -59,9 +44,6 @@ namespace ChickenNuggetSimulator.Core
         protected override void Initialize()
         {
             base.Initialize();
-
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            graphicsDeviceManager.ApplyChanges();
 
             // Load supported languages and set the default language.
             List<CultureInfo> cultures = LocalizationManager.GetSupportedCultures();
@@ -118,13 +100,13 @@ namespace ChickenNuggetSimulator.Core
             GraphicsDevice.Clear(Color.Green);
 
             // Begin the sprite batch to prepare for rendering.
-            spriteBatch.Begin();
+            SpriteBatch.Begin();
 
             // Draw the chicken texture
-            spriteBatch.Draw(chicken, Vector2.Zero, Color.White);
+            SpriteBatch.Draw(chicken, Vector2.Zero, Color.White);
 
             // Always end the sprite batch when finished.
-            spriteBatch.End();
+            SpriteBatch.End();
 
             base.Draw(gameTime);
         }
