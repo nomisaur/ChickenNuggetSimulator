@@ -9,10 +9,6 @@ public class Setup : Game
     public readonly int Width = 1080;
     public readonly int Height = 1920;
 
-    // The rendered resolution.
-    public int vWidth = 1080;
-    public int vHeight = 1920;
-
     private bool letterboxed = false;
 
     public Matrix screenScaleMatrix;
@@ -129,38 +125,37 @@ public class Setup : Game
         }
     }
 
-    private void UpdateScreenScaleMatrix()
+    void UpdateScreenScaleMatrix()
     {
-        // size of actual screen
         float screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
         float screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
 
-        // calculate virtual resolution based on aspect ratio of actual screen
-        if (
-            letterboxed
-                ? screenWidth / Width > screenHeight / Height
-                : screenWidth / Width < screenHeight / Height
-        )
-        {
-            float aspect = screenHeight / Height;
-            vWidth = (int)(aspect * Width);
-            vHeight = (int)screenHeight;
-        }
-        else
-        {
-            float aspect = screenWidth / Width;
-            vWidth = (int)screenWidth;
-            vHeight = (int)(aspect * Height);
-        }
+        float scaleX = screenWidth / Width; // how much we’d scale to match width
+        float scaleY = screenHeight / Height; // how much we’d scale to match height
 
-        screenScaleMatrix = Matrix.CreateScale(vWidth / (float)Width);
+        // contain = Min, cover = Max
+        float scale = letterboxed ? MathF.Min(scaleX, scaleY) : MathF.Max(scaleX, scaleY);
 
+        // Destination size in screen pixels (before rounding)
+        float dstWf = Width * scale;
+        float dstHf = Height * scale;
+
+        // Centered destination rect (careful rounding)
+        int virtualWidth = (int)MathF.Round(dstWf);
+        int virtualHeight = (int)MathF.Round(dstHf);
+        int virtualX = (int)MathF.Round((screenWidth - dstWf) * 0.5f);
+        int virtualY = (int)MathF.Round((screenHeight - dstHf) * 0.5f);
+
+        // Uniform scale matrix
+        screenScaleMatrix = Matrix.CreateScale(scale);
+
+        // Viewport for centering/letterbox or full cover
         Viewport = new Viewport
         {
-            X = (int)(screenWidth / 2 - vWidth / 2),
-            Y = (int)(screenHeight / 2 - vHeight / 2),
-            Width = vWidth,
-            Height = vHeight,
+            X = virtualX,
+            Y = virtualY,
+            Width = virtualWidth,
+            Height = virtualHeight,
             MinDepth = 0,
             MaxDepth = 1,
         };

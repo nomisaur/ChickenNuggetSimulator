@@ -135,10 +135,6 @@ public class ChickenNuggetSimulatorGame : Setup
 
         // end
         SpriteBatch.End();
-        // GraphicsDevice.SetRenderTarget(null);
-        // SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        // SpriteBatch.Draw(RenderTarget, RenderDestination, Color.White);
-        // SpriteBatch.End();
         base.Draw(gameTime);
     }
 }
