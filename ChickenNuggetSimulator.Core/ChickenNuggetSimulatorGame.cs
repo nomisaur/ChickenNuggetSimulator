@@ -5,6 +5,8 @@ using ChickenNuggetSimulator.Core.Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using State;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ChickenNuggetSimulator.Core;
@@ -15,19 +17,10 @@ namespace ChickenNuggetSimulator.Core;
 /// </summary>
 public class ChickenNuggetSimulatorGame : Setup
 {
-    private Texture2D chicken;
+    private Chicken chicken;
     private Texture2D background;
 
-    /// <summary>
-    /// Indicates if the game is running on a mobile platform.
-    /// </summary>
-    public readonly static bool IsMobile = OperatingSystem.IsAndroid() || OperatingSystem.IsIOS();
-
-    /// <summary>
-    /// Indicates if the game is running on a desktop platform.
-    /// </summary>
-    public readonly static bool IsDesktop =
-        OperatingSystem.IsMacOS() || OperatingSystem.IsLinux() || OperatingSystem.IsWindows();
+    private Input input;
 
     /// <summary>
     /// Initializes a new instance of the game. Configures platform-specific settings,
@@ -57,6 +50,8 @@ public class ChickenNuggetSimulatorGame : Setup
         // based on what the user or operating system selected.
         var selectedLanguage = LocalizationManager.DEFAULT_CULTURE_CODE;
         LocalizationManager.SetCulture(selectedLanguage);
+
+        input = new Input();
     }
 
     /// <summary>
@@ -65,8 +60,8 @@ public class ChickenNuggetSimulatorGame : Setup
     protected override void LoadContent()
     {
         base.LoadContent();
-        chicken = Content.Load<Texture2D>("Assets/Chicken/chicken");
-        background = Content.Load<Texture2D>("Assets/Chicken/coop");
+        chicken = new Chicken() { Position = new Vector2(Width * 0.5f, Height * 0.5f) };
+        background = Utils.MakeTexture("Assets/Chicken/coop");
     }
 
     /// <summary>
@@ -85,6 +80,7 @@ public class ChickenNuggetSimulatorGame : Setup
             Exit();
 
         // TODO: Add your update logic here
+        input.Update();
 
         base.Update(gameTime);
     }
@@ -118,20 +114,9 @@ public class ChickenNuggetSimulatorGame : Setup
             0.0f
         );
 
-        SpriteBatch.Draw(
-            chicken, // texture
-            new Vector2( // position
-                (Width * 0.5f) - (chicken.Width * 0.5f * 0.5f),
-                (Height * 0.5f) - (chicken.Height * 0.5f * 0.5f)
-            ),
-            null, // sourceRectangle
-            Color.White, // color
-            0.0f, // rotation
-            Vector2.Zero, // origin
-            0.5f, // scale
-            SpriteEffects.None, // effects
-            0.0f
-        );
+        Utils.DrawChicken(chicken);
+
+        input.Draw();
 
         // end
         SpriteBatch.End();

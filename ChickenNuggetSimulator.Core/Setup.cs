@@ -11,10 +11,22 @@ public class Setup : Game
 
     private bool letterboxed = false;
 
-    public Matrix screenScaleMatrix;
+    public static Matrix screenScaleMatrix;
+    public static Matrix inverseScreenScaleMatrix;
     public Viewport Viewport;
 
     private bool isResizing = false;
+
+    /// <summary>
+    /// Indicates if the game is running on a mobile platform.
+    /// </summary>
+    public readonly static bool IsMobile = OperatingSystem.IsAndroid() || OperatingSystem.IsIOS();
+
+    /// <summary>
+    /// Indicates if the game is running on a desktop platform.
+    /// </summary>
+    public readonly static bool IsDesktop =
+        OperatingSystem.IsMacOS() || OperatingSystem.IsLinux() || OperatingSystem.IsWindows();
     internal static Setup s_instance;
 
     /// <summary>
@@ -137,18 +149,18 @@ public class Setup : Game
         float scale = letterboxed ? MathF.Min(scaleX, scaleY) : MathF.Max(scaleX, scaleY);
 
         // Destination size in screen pixels (before rounding)
-        float dstWf = Width * scale;
-        float dstHf = Height * scale;
+        float destinationWidth = Width * scale;
+        float destinationHeight = Height * scale;
 
         // Centered destination rect (careful rounding)
-        int virtualWidth = (int)MathF.Round(dstWf);
-        int virtualHeight = (int)MathF.Round(dstHf);
-        int virtualX = (int)MathF.Round((screenWidth - dstWf) * 0.5f);
-        int virtualY = (int)MathF.Round((screenHeight - dstHf) * 0.5f);
+        int virtualWidth = (int)MathF.Round(destinationWidth);
+        int virtualHeight = (int)MathF.Round(destinationHeight);
+        int virtualX = (int)MathF.Round((screenWidth - destinationWidth) * 0.5f);
+        int virtualY = (int)MathF.Round((screenHeight - destinationHeight) * 0.5f);
 
         // Uniform scale matrix
         screenScaleMatrix = Matrix.CreateScale(scale);
-
+        inverseScreenScaleMatrix = Matrix.Invert(screenScaleMatrix);
         // Viewport for centering/letterbox or full cover
         Viewport = new Viewport
         {
