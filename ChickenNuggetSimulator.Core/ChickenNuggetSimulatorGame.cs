@@ -61,7 +61,7 @@ public class ChickenNuggetSimulatorGame : Setup
     {
         base.LoadContent();
         chicken = new Chicken() { Position = new Vector2(Width * 0.5f, Height * 0.5f) };
-        background = Utils.MakeTexture("Assets/Chicken/coop");
+        background = Utils.MakeTexture("Assets/background");
     }
 
     /// <summary>
@@ -95,27 +95,24 @@ public class ChickenNuggetSimulatorGame : Setup
     {
         // setup
         GraphicsDevice.Clear(Color.Green);
-        GraphicsDevice.Viewport = Viewport;
         SpriteBatch.Begin(
             transformMatrix: screenScaleMatrix,
             samplerState: SamplerState.LinearClamp
         );
 
-        // Draw here
         SpriteBatch.Draw(
-            background,
-            Vector2.Zero,
-            new Rectangle(200, 200, 540, 960),
-            Color.White,
-            0.0f,
-            Vector2.Zero,
-            4.0f,
-            SpriteEffects.None,
-            0.0f
+            texture: background,
+            position: Vector2.Zero,
+            sourceRectangle: null,
+            color: Color.White,
+            rotation: 0.0f,
+            origin: new Vector2(100, 50),
+            scale: 1.0f,
+            effects: SpriteEffects.None,
+            layerDepth: 0.0f
         );
 
         Utils.DrawChicken(chicken);
-
         input.Draw();
 
         // end

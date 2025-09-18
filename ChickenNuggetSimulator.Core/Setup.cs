@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 
 public class Setup : Game
 {
@@ -13,7 +14,6 @@ public class Setup : Game
 
     public static Matrix screenScaleMatrix;
     public static Matrix inverseScreenScaleMatrix;
-    public Viewport Viewport;
 
     private bool isResizing = false;
 
@@ -77,10 +77,19 @@ public class Setup : Game
         Graphics = new GraphicsDeviceManager(this);
 
         // Set the graphics defaults.
-        Graphics.PreferredBackBufferWidth = 540;
-        Graphics.PreferredBackBufferHeight = 960;
-        // Graphics.PreferredBackBufferWidth = Width;
-        // Graphics.PreferredBackBufferHeight = Height;
+        if (IsDesktop)
+        {
+            Graphics.PreferredBackBufferWidth = 540;
+            Graphics.PreferredBackBufferHeight = 960;
+        }
+#if ANDROID
+        Graphics.IsFullScreen = true;
+        Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        Graphics.PreferredBackBufferHeight = GraphicsAdapter
+            .DefaultAdapter
+            .CurrentDisplayMode
+            .Height;
+#endif
         Graphics.SupportedOrientations = orientation;
         Graphics.IsFullScreen = fullScreen;
         Window.AllowUserResizing = true;
@@ -113,6 +122,7 @@ public class Setup : Game
 
     protected override void Initialize()
     {
+        Console.WriteLine($"calling init ❤️");
         base.Initialize();
 
         // Set the core's graphics device to a reference of the base Game's
@@ -126,7 +136,11 @@ public class Setup : Game
 
     private void OnClientSizeChanged(object sender, EventArgs e)
     {
-        if (Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        if (
+            Window.ClientBounds.Width > 0
+            && Window.ClientBounds.Height > 0
+            && GraphicsDevice != null
+        )
         {
             if (!isResizing)
             {
@@ -137,8 +151,20 @@ public class Setup : Game
         }
     }
 
-    void UpdateScreenScaleMatrix()
+    public void UpdateScreenScaleMatrix()
     {
+        if (OperatingSystem.IsAndroid())
+        {
+            Graphics.PreferredBackBufferWidth = GraphicsAdapter
+                .DefaultAdapter
+                .CurrentDisplayMode
+                .Width;
+            Graphics.PreferredBackBufferHeight = GraphicsAdapter
+                .DefaultAdapter
+                .CurrentDisplayMode
+                .Height;
+            Graphics.ApplyChanges();
+        }
         float screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
         float screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
 
@@ -148,28 +174,16 @@ public class Setup : Game
         // contain = Min, cover = Max
         float scale = letterboxed ? MathF.Min(scaleX, scaleY) : MathF.Max(scaleX, scaleY);
 
-        // Destination size in screen pixels (before rounding)
-        float destinationWidth = Width * scale;
-        float destinationHeight = Height * scale;
-
-        // Centered destination rect (careful rounding)
-        int virtualWidth = (int)MathF.Round(destinationWidth);
-        int virtualHeight = (int)MathF.Round(destinationHeight);
-        int virtualX = (int)MathF.Round((screenWidth - destinationWidth) * 0.5f);
-        int virtualY = (int)MathF.Round((screenHeight - destinationHeight) * 0.5f);
+        int virtualX = (int)MathF.Round((screenWidth - Width * scale) * 0.5f);
+        int virtualY = (int)MathF.Round((screenHeight - Height * scale) * 0.5f);
 
         // Uniform scale matrix
-        screenScaleMatrix = Matrix.CreateScale(scale);
+        screenScaleMatrix =
+            Matrix.CreateScale(scale) * Matrix.CreateTranslation(virtualX, virtualY, 0);
         inverseScreenScaleMatrix = Matrix.Invert(screenScaleMatrix);
-        // Viewport for centering/letterbox or full cover
-        Viewport = new Viewport
-        {
-            X = virtualX,
-            Y = virtualY,
-            Width = virtualWidth,
-            Height = virtualHeight,
-            MinDepth = 0,
-            MaxDepth = 1,
-        };
+
+        TouchPanel.DisplayWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        TouchPanel.DisplayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+        TouchPanel.DisplayOrientation = GraphicsDevice.PresentationParameters.DisplayOrientation;
     }
 }

@@ -46,18 +46,11 @@ public class Input
             return new Touch
             {
                 Position = Vector2.Transform(touchPoint.Position, Setup.inverseScreenScaleMatrix),
-                // Position = touchPoint.Position,
                 IsPressed =
                     touchPoint.State == TouchLocationState.Pressed
                     || touchPoint.State == TouchLocationState.Moved,
             };
         });
-        if (Touches.Count() > 0)
-        {
-            Console.WriteLine(
-                $"Position: {Touches.First().Position}, transformed: {Vector2.Transform(Touches.First().Position, Setup.inverseScreenScaleMatrix)}"
-            );
-        }
     }
 
     public void Draw()
