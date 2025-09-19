@@ -1,10 +1,36 @@
+using System;
+using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace State;
 
+public class Nuggets
+{
+    public int Count = 0;
+
+    public int add(int amount)
+    {
+        Count += amount;
+        return Count;
+    }
+
+    public int subtract(int amount)
+    {
+        Count = Math.Max(0, Count - amount);
+        return Count;
+    }
+}
+
 public class Chicken
 {
+    public ChickenNuggetSimulatorGame game;
+
+    public Chicken(ChickenNuggetSimulatorGame game)
+    {
+        this.game = game;
+    }
+
     public Vector2 Position = Vector2.Zero;
 
     public Vector2 Size = new Vector2(700, 700);
@@ -20,6 +46,30 @@ public class Chicken
         Scale = 0.5f,
         SourceRectangle = new Rectangle(0, 0, 1400, 1400),
     };
+
+    public int Click()
+    {
+        return game.nuggets.add(1);
+    }
+
+    public void Update()
+    {
+        var input = game.input;
+        if (input.JustTouched)
+        {
+            if (Bounds.Contains((int)input.MouseClick.Position.X, (int)input.MouseClick.Position.Y))
+            {
+                Click();
+            }
+            foreach (var touch in input.Touches)
+            {
+                if (Bounds.Contains((int)touch.Position.X, (int)touch.Position.Y))
+                {
+                    Click();
+                }
+            }
+        }
+    }
 }
 
 public class Sprite

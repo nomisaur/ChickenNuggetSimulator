@@ -17,10 +17,14 @@ namespace ChickenNuggetSimulator.Core;
 /// </summary>
 public class ChickenNuggetSimulatorGame : Setup
 {
-    private Chicken chicken;
+    public Chicken chicken;
+    public Nuggets nuggets = new Nuggets();
+
+    public SpriteFont Font;
+
     private Texture2D background;
 
-    private Input input;
+    public Input input;
 
     /// <summary>
     /// Initializes a new instance of the game. Configures platform-specific settings,
@@ -60,8 +64,9 @@ public class ChickenNuggetSimulatorGame : Setup
     protected override void LoadContent()
     {
         base.LoadContent();
-        chicken = new Chicken() { Position = new Vector2(Width * 0.5f, Height * 0.5f) };
+        chicken = new Chicken(this) { Position = new Vector2(Width * 0.5f, Height * 0.5f) };
         background = Utils.MakeTexture("Assets/background");
+        Font = Content.Load<SpriteFont>("Fonts/Hud");
     }
 
     /// <summary>
@@ -81,6 +86,10 @@ public class ChickenNuggetSimulatorGame : Setup
 
         // TODO: Add your update logic here
         input.Update();
+
+        chicken.Update();
+
+        // Console.WriteLine($"clicking? {input.JustTouched} {input.IsTouching}");
 
         base.Update(gameTime);
     }
@@ -116,6 +125,18 @@ public class ChickenNuggetSimulatorGame : Setup
         input.Draw();
 
         // end
+        SpriteBatch.End();
+
+        SpriteBatch.Begin(samplerState: SamplerState.LinearClamp);
+        SpriteBatch.DrawString(
+            Font, // font
+            $"Nuggets: {nuggets.Count}", // text
+            new Vector2(
+                GraphicsDevice.Viewport.TitleSafeArea.X,
+                GraphicsDevice.Viewport.TitleSafeArea.Y
+            ), // position
+            Color.Black // color
+        );
         SpriteBatch.End();
         base.Draw(gameTime);
     }

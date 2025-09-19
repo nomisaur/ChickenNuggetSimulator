@@ -122,7 +122,6 @@ public class Setup : Game
 
     protected override void Initialize()
     {
-        Console.WriteLine($"calling init ❤️");
         base.Initialize();
 
         // Set the core's graphics device to a reference of the base Game's

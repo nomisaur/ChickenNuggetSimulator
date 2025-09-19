@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -24,6 +26,12 @@ public class Input
     public IEnumerable<Touch> Touches;
 
     public Touch MouseClick = new();
+    public bool IsTouching = false;
+
+    internal bool PreviousIsTouching = false;
+
+    public bool JustTouched = false;
+    public bool JustReleased = false;
 
     public void Update()
     {
@@ -47,6 +55,17 @@ public class Input
                     || touchPoint.State == TouchLocationState.Moved,
             };
         });
+
+        IsTouching = MouseClick.IsPressed || Touches.Any(t => t.IsPressed);
+
+        JustTouched = IsTouching && !PreviousIsTouching;
+        JustReleased = !IsTouching && PreviousIsTouching;
+
+        // Console.WriteLine(
+        //     $"IsTouching: {IsTouching}, JustTouched: {JustTouched}, JustReleased: {JustReleased}, prev: {PreviousIsTouching}"
+        // );
+
+        PreviousIsTouching = IsTouching;
     }
 
     public void Draw()
