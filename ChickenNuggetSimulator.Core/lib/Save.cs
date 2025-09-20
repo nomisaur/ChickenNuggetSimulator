@@ -11,11 +11,11 @@ public sealed class SaveData
 
 public class SaveSystem
 {
-    public Setup game;
+    public ChickenNuggetSimulatorGame game;
 
     public SaveData data;
 
-    public SaveSystem(Setup game)
+    public SaveSystem(ChickenNuggetSimulatorGame game)
     {
         this.game = game;
         data = Load();

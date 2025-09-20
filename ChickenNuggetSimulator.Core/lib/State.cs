@@ -41,10 +41,10 @@ public class Chicken
 
     public class Textures
     {
-        public static Texture2D Rested = Setup.Content.Load<Texture2D>(
+        public static Texture2D Rested = ChickenNuggetSimulatorGame.Content.Load<Texture2D>(
             "Assets/Chicken/Chicken_rested_600"
         );
-        public static Texture2D Activated = Setup.Content.Load<Texture2D>(
+        public static Texture2D Activated = ChickenNuggetSimulatorGame.Content.Load<Texture2D>(
             "Assets/Chicken/Chicken_activated_600"
         );
     }
