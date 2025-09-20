@@ -133,7 +133,7 @@ public class ChickenNuggetSimulatorGame : Setup
         SpriteBatch.DrawString(
             Font, // font
             $"Nuggets: {nuggets.Count}", // text
-            new Vector2(Insets.Left, Insets.Top), // position
+            new Vector2(Insets.Left + 20, Insets.Top + 20), // position
             Color.Black // color
         );
 

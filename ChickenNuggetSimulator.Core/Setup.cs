@@ -207,9 +207,7 @@ public class Setup : Game
         TouchPanel.DisplayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
         TouchPanel.DisplayOrientation = GraphicsDevice.PresentationParameters.DisplayOrientation;
 
-        (int left, int top, int right, int bottom) = IsMobile
-            ? SafeArea.GetInsets()
-            : (20, 20, 20, 20);
+        (int left, int top, int right, int bottom) = IsMobile ? SafeArea.GetInsets() : (0, 0, 0, 0);
 
         int viewW = (int)MathF.Round(Width * scale);
         int viewH = (int)MathF.Round(Height * scale);
