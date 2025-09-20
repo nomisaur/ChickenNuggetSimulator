@@ -4,11 +4,33 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 
+public static class SafeArea
+{
+    // Set this from platform projects
+    public static Func<(int Left, int Top, int Right, int Bottom)> GetInsets;
+}
+
+public class Insets
+{
+    public int Left;
+    public int Top;
+    public int Right;
+    public int Bottom;
+}
+
 public class Setup : Game
 {
     // The desired resolution.
     public readonly int Width = 1080;
     public readonly int Height = 1920;
+
+    public Insets Insets = new Insets
+    {
+        Left = 0,
+        Top = 0,
+        Right = 0,
+        Bottom = 0,
+    };
 
     private bool letterboxed = false;
 
@@ -184,5 +206,38 @@ public class Setup : Game
         TouchPanel.DisplayWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
         TouchPanel.DisplayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
         TouchPanel.DisplayOrientation = GraphicsDevice.PresentationParameters.DisplayOrientation;
+
+        (int left, int top, int right, int bottom) = IsMobile
+            ? SafeArea.GetInsets()
+            : (20, 20, 20, 20);
+
+        int viewW = (int)MathF.Round(Width * scale);
+        int viewH = (int)MathF.Round(Height * scale);
+        // Usable screen bounds after OS insets (still in *screen* pixels)
+        int usableRight = (int)screenWidth - right;
+        int usableBottom = (int)screenHeight - bottom;
+
+        // Convert to *virtual* distances (this naturally includes cover-cropping)
+        float inv = 1f / scale;
+
+        int padLeft = Math.Max(0, (int)MathF.Ceiling((left - virtualX) * inv));
+        int padTop = Math.Max(0, (int)MathF.Ceiling((top - virtualY) * inv));
+        int padRight = Math.Max(0, (int)MathF.Ceiling((virtualX + viewW - usableRight) * inv));
+        int padBottom = Math.Max(0, (int)MathF.Ceiling((virtualY + viewH - usableBottom) * inv));
+
+        // Safety clamp so pads never exceed your virtual size
+        padLeft = Math.Min(padLeft, Width);
+        padTop = Math.Min(padTop, Height);
+        padRight = Math.Min(padRight, Width);
+        padBottom = Math.Min(padBottom, Height);
+
+        // ← Final distances you want (in *virtual* pixels)
+        Insets = new Insets
+        {
+            Left = padLeft,
+            Top = padTop,
+            Right = padRight,
+            Bottom = padBottom,
+        };
     }
 }

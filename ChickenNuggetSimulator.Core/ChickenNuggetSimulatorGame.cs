@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ChickenNuggetSimulator.Core.Localization;
@@ -7,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using State;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ChickenNuggetSimulator.Core;
 
@@ -23,6 +21,8 @@ public class ChickenNuggetSimulatorGame : Setup
     public SpriteFont Font;
 
     private Texture2D background;
+
+    public bool firstFrame = true;
 
     public Input input;
 
@@ -89,6 +89,12 @@ public class ChickenNuggetSimulatorGame : Setup
 
         chicken.Update();
 
+        if (firstFrame)
+        {
+            firstFrame = false;
+            UpdateScreenScaleMatrix();
+        }
+
         // Console.WriteLine($"clicking? {input.JustTouched} {input.IsTouching}");
 
         base.Update(gameTime);
@@ -124,19 +130,14 @@ public class ChickenNuggetSimulatorGame : Setup
         Utils.DrawChicken(chicken);
         input.Draw();
 
-        // end
-        SpriteBatch.End();
-
-        SpriteBatch.Begin(samplerState: SamplerState.LinearClamp);
         SpriteBatch.DrawString(
             Font, // font
             $"Nuggets: {nuggets.Count}", // text
-            new Vector2(
-                GraphicsDevice.Viewport.TitleSafeArea.X,
-                GraphicsDevice.Viewport.TitleSafeArea.Y
-            ), // position
+            new Vector2(Insets.Left, Insets.Top), // position
             Color.Black // color
         );
+
+        // end
         SpriteBatch.End();
         base.Draw(gameTime);
     }

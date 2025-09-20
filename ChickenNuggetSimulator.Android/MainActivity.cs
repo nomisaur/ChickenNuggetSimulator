@@ -2,6 +2,7 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
+using AndroidX.Core.View;
 using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
 
@@ -46,6 +47,21 @@ namespace ChickenNuggetSimulator.Android
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);
+
+            SafeArea.GetInsets = () =>
+            {
+                var decor = Window?.DecorView;
+                if (decor == null)
+                    return (0, 0, 0, 0);
+
+                var insetsCompat = ViewCompat.GetRootWindowInsets(decor);
+                if (insetsCompat == null)
+                    return (0, 0, 0, 0);
+
+                var i = insetsCompat.GetInsets(WindowInsetsCompat.Type.SystemBars());
+                return (i.Left, i.Top, i.Right, i.Bottom);
+            };
+
             _game.Run();
         }
     }
