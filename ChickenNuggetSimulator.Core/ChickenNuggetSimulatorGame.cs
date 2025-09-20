@@ -16,7 +16,7 @@ namespace ChickenNuggetSimulator.Core;
 public class ChickenNuggetSimulatorGame : Setup
 {
     public Chicken chicken;
-    public Nuggets nuggets = new Nuggets();
+    public Nuggets nuggets;
 
     public SpriteFont Font;
 
@@ -65,6 +65,7 @@ public class ChickenNuggetSimulatorGame : Setup
     {
         base.LoadContent();
         chicken = new Chicken(this) { Position = new Vector2(Width * 0.5f, Height * 0.5f) };
+        nuggets = new Nuggets(this);
         background = Utils.MakeTexture("Assets/background");
         Font = Content.Load<SpriteFont>("Fonts/Hud");
     }

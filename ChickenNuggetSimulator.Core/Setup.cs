@@ -38,6 +38,7 @@ public class Setup : Game
     public static Matrix inverseScreenScaleMatrix;
 
     private bool isResizing = false;
+    public SaveSystem saveSystem;
 
     /// <summary>
     /// Indicates if the game is running on a mobile platform.
@@ -135,6 +136,10 @@ public class Setup : Game
 
         // Mouse is visible by default.
         IsMouseVisible = true;
+
+        saveSystem = new SaveSystem(this);
+
+        Deactivated += (_, __) => saveSystem.Save();
     }
 
     protected override void LoadContent()

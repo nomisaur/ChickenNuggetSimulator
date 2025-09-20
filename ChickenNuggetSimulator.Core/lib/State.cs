@@ -5,19 +5,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace State;
 
-public class Nuggets
+public class Nuggets(ChickenNuggetSimulatorGame game)
 {
-    public int Count = 0;
+    public int Count => game.saveSystem.data.Nuggets;
 
     public int add(int amount)
     {
-        Count += amount;
+        game.saveSystem.data.Nuggets += amount;
         return Count;
     }
 
     public int subtract(int amount)
     {
-        Count = Math.Max(0, Count - amount);
+        game.saveSystem.data.Nuggets = Math.Max(0, Count - amount);
         return Count;
     }
 }
@@ -33,22 +33,33 @@ public class Chicken
 
     public Vector2 Position = Vector2.Zero;
 
-    public Vector2 Size = new Vector2(700, 700);
+    public Vector2 Size = new Vector2(600, 600);
     public Vector2 Center => new(Size.X * 0.5f, Size.Y * 0.5f);
 
     public Rectangle Bounds =>
         new((int)(Position.X - Center.X), (int)(Position.Y - Center.Y), (int)Size.X, (int)Size.Y);
 
+    public class Textures
+    {
+        public static Texture2D Rested = Setup.Content.Load<Texture2D>(
+            "Assets/Chicken/Chicken_rested_600"
+        );
+        public static Texture2D Activated = Setup.Content.Load<Texture2D>(
+            "Assets/Chicken/Chicken_activated_600"
+        );
+    }
+
     public Sprite Sprite = new()
     {
-        Texture = Setup.Content.Load<Texture2D>("Assets/Chicken/chicken"),
-        Origin = new Vector2(700, 700),
-        Scale = 0.5f,
-        SourceRectangle = new Rectangle(0, 0, 1400, 1400),
+        Texture = Textures.Rested,
+        Origin = new Vector2(300, 300),
+        Scale = 1.0f,
+        SourceRectangle = null,
     };
 
     public int Click()
     {
+        Sprite.Texture = Textures.Activated;
         return game.nuggets.add(1);
     }
 
@@ -68,6 +79,10 @@ public class Chicken
                     Click();
                 }
             }
+        }
+        if (input.JustReleased)
+        {
+            Sprite.Texture = Textures.Rested;
         }
     }
 }
