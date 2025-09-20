@@ -30,7 +30,7 @@ namespace ChickenNuggetSimulator.Android
     )]
     public class MainActivity : AndroidGameActivity
     {
-        private ChickenNuggetSimulatorGame _game;
+        private CNS _game;
         private View _view;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ChickenNuggetSimulator.Android
         {
             base.OnCreate(bundle);
 
-            _game = new ChickenNuggetSimulatorGame();
+            _game = new CNS();
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);

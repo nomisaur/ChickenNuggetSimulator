@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using MonoGame.Extended;
 
-public class Input
+public class Input()
 {
     // public MouseState PreviousMouseState;
 
@@ -33,13 +33,13 @@ public class Input
     public bool JustTouched = false;
     public bool JustReleased = false;
 
-    public void Update(ChickenNuggetSimulatorGame game)
+    public void Update(CNS game)
     {
         // PreviousMouseState = CurrentMouseState;
         CurrentMouseState = Mouse.GetState();
         MouseClick.Position = Vector2.Transform(
             new Vector2(CurrentMouseState.X, CurrentMouseState.Y),
-            ChickenNuggetSimulatorGame.inverseScreenScaleMatrix
+            game.Screen.inverseScreenScaleMatrix
         );
         MouseClick.IsPressed = CurrentMouseState.LeftButton == ButtonState.Pressed;
 
@@ -51,7 +51,7 @@ public class Input
             {
                 Position = Vector2.Transform(
                     touchPoint.Position,
-                    ChickenNuggetSimulatorGame.inverseScreenScaleMatrix
+                    game.Screen.inverseScreenScaleMatrix
                 ),
                 IsPressed =
                     touchPoint.State == TouchLocationState.Pressed
@@ -71,11 +71,11 @@ public class Input
         PreviousIsTouching = IsTouching;
     }
 
-    public void Draw(ChickenNuggetSimulatorGame game)
+    public void Draw(CNS game)
     {
         if (MouseClick.IsPressed)
         {
-            ChickenNuggetSimulatorGame.SpriteBatch.FillRectangle(
+            game.SpriteBatch.FillRectangle(
                 new RectangleF(MouseClick.Position.X - 10, MouseClick.Position.Y - 10, 20, 20),
                 Color.Red
             );
@@ -85,7 +85,7 @@ public class Input
         {
             if (touch.IsPressed)
             {
-                ChickenNuggetSimulatorGame.SpriteBatch.FillRectangle(
+                game.SpriteBatch.FillRectangle(
                     new RectangleF(touch.Position.X - 10, touch.Position.Y - 10, 20, 20),
                     Color.Blue
                 );

@@ -2,70 +2,40 @@ using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using State;
 
-public class Utils
+public static class Utils
 {
-    public static Texture2D MakeTexture(string path)
+    public static Texture2D MakeTexture(CNS game, string path)
     {
-        return ChickenNuggetSimulatorGame.Content.Load<Texture2D>(path);
+        return game.Content.Load<Texture2D>(path);
     }
 
-    public static void DrawChicken(Chicken chicken)
+    public static void DrawSafeArea(CNS game)
     {
-        ChickenNuggetSimulatorGame.SpriteBatch.Draw(
-            chicken.Sprite.Texture,
-            chicken.Position,
-            chicken.Sprite.SourceRectangle,
-            chicken.Sprite.Color,
-            chicken.Sprite.Rotation,
-            chicken.Sprite.Origin,
-            chicken.Sprite.Scale,
-            chicken.Sprite.Effects,
-            chicken.Sprite.LayerDepth
-        );
-    }
-
-    public static void DrawSafeArea(int left, int top, int right, int bottom)
-    {
-        ChickenNuggetSimulatorGame.SpriteBatch.FillRectangle(
-            new RectangleF(
-                ChickenNuggetSimulatorGame.Instance.Insets.Left,
-                ChickenNuggetSimulatorGame.Instance.Height * 0.5f,
-                10,
-                10
-            ),
+        game.SpriteBatch.FillRectangle(
+            new RectangleF(game.Screen.Insets.Left, game.Screen.Height * 0.5f, 10, 10),
             Color.Red
         );
 
-        ChickenNuggetSimulatorGame.SpriteBatch.FillRectangle(
+        game.SpriteBatch.FillRectangle(
             new RectangleF(
-                ChickenNuggetSimulatorGame.Instance.Width
-                    - ChickenNuggetSimulatorGame.Instance.Insets.Right
-                    - 10,
-                ChickenNuggetSimulatorGame.Instance.Height * 0.5f,
+                game.Screen.Width - game.Screen.Insets.Right - 10,
+                game.Screen.Height * 0.5f,
                 10,
                 10
             ),
             Color.Orange
         );
 
-        ChickenNuggetSimulatorGame.SpriteBatch.FillRectangle(
-            new RectangleF(
-                ChickenNuggetSimulatorGame.Instance.Width * 0.5f,
-                ChickenNuggetSimulatorGame.Instance.Insets.Top,
-                10,
-                10
-            ),
+        game.SpriteBatch.FillRectangle(
+            new RectangleF(game.Screen.Width * 0.5f, game.Screen.Insets.Top, 10, 10),
             Color.Blue
         );
 
-        ChickenNuggetSimulatorGame.SpriteBatch.FillRectangle(
+        game.SpriteBatch.FillRectangle(
             new RectangleF(
-                ChickenNuggetSimulatorGame.Instance.Width * 0.5f,
-                ChickenNuggetSimulatorGame.Instance.Height
-                    - ChickenNuggetSimulatorGame.Instance.Insets.Bottom
-                    - 10,
+                game.Screen.Width * 0.5f,
+                game.Screen.Height - game.Screen.Insets.Bottom - 10,
                 10,
                 10
             ),

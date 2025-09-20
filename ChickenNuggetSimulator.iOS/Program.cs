@@ -9,7 +9,7 @@ namespace ChickenNuggetSimulator.iOS
     [Register("AppDelegate")]
     internal class Program : UIApplicationDelegate
     {
-        private static ChickenNuggetSimulatorGame _game;
+        private static CNS _game;
 
         /// <summary>
         /// Initializes and starts the game by creating an instance of the
@@ -17,7 +17,7 @@ namespace ChickenNuggetSimulator.iOS
         /// </summary>
         internal static void RunGame()
         {
-            _game = new ChickenNuggetSimulatorGame();
+            _game = new CNS();
             _game.Run();
         }
 

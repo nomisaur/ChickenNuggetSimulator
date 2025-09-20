@@ -1,12 +1,12 @@
-﻿using ChickenNuggetSimulator.Core;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using ChickenNuggetSimulator.Core;
 
 internal class Program
 {
     /// <summary>
     /// The main entry point for the application on Windows.
     /// Configures the application for high DPI awareness.
-    /// It also creates an instance of your game and calls it's Run() method 
+    /// It also creates an instance of your game and calls it's Run() method
     /// </summary>
     /// <param name="args">Command-line arguments passed to the application.</param>
     private static void Main(string[] args)
@@ -15,7 +15,7 @@ internal class Program
         Application.SetHighDpiMode(HighDpiMode.SystemAware);
 
         // Create an instance of the game and start the game loop.
-        using var game = new ChickenNuggetSimulatorGame();
+        using var game = new CNS();
         game.Run();
     }
 }
