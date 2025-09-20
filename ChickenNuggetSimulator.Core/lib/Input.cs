@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using MonoGame.Extended;
 
-public class Input()
+public class Input(CNS game)
 {
     // public MouseState PreviousMouseState;
 
@@ -33,7 +33,7 @@ public class Input()
     public bool JustTouched = false;
     public bool JustReleased = false;
 
-    public void Update(CNS game)
+    public void Update()
     {
         // PreviousMouseState = CurrentMouseState;
         CurrentMouseState = Mouse.GetState();
@@ -64,14 +64,10 @@ public class Input()
         JustTouched = IsTouching && !PreviousIsTouching;
         JustReleased = !IsTouching && PreviousIsTouching;
 
-        // Console.WriteLine(
-        //     $"IsTouching: {IsTouching}, JustTouched: {JustTouched}, JustReleased: {JustReleased}, prev: {PreviousIsTouching}"
-        // );
-
         PreviousIsTouching = IsTouching;
     }
 
-    public void Draw(CNS game)
+    public void Draw()
     {
         if (MouseClick.IsPressed)
         {

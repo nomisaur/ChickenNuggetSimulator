@@ -1,15 +1,9 @@
 using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 public static class Utils
 {
-    public static Texture2D MakeTexture(CNS game, string path)
-    {
-        return game.Content.Load<Texture2D>(path);
-    }
-
     public static void DrawSafeArea(CNS game)
     {
         game.SpriteBatch.FillRectangle(

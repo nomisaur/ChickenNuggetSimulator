@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ChickenNuggetSimulator.Core.Localization;
@@ -6,8 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
-using MonoGame.Extended;
 using State;
 
 namespace ChickenNuggetSimulator.Core;
@@ -88,7 +85,7 @@ public class CNS : Game
 
         Screen.UpdateScreenScaleMatrix();
 
-        input = new Input();
+        input = new Input(this);
     }
 
     /// <summary>
@@ -102,7 +99,7 @@ public class CNS : Game
             Position = new Vector2(Screen.Width * 0.5f, Screen.Height * 0.5f),
         };
         nuggets = new Nuggets(this);
-        background = Utils.MakeTexture(this, "Assets/background");
+        background = Content.Load<Texture2D>("Assets/background");
         Font = Content.Load<SpriteFont>("Fonts/Hud");
     }
 
@@ -121,8 +118,7 @@ public class CNS : Game
         )
             Exit();
 
-        // TODO: Add your update logic here
-        input.Update(this);
+        input.Update();
 
         chicken.Update();
 
@@ -131,8 +127,6 @@ public class CNS : Game
             firstFrame = false;
             Screen.UpdateScreenScaleMatrix();
         }
-
-        // Console.WriteLine($"clicking? {input.JustTouched} {input.IsTouching}");
 
         base.Update(gameTime);
     }
@@ -164,9 +158,8 @@ public class CNS : Game
             layerDepth: 0.0f
         );
 
-        // Utils.DrawChicken(chicken);
         chicken.Draw();
-        input.Draw(this);
+        input.Draw();
 
         SpriteBatch.DrawString(
             Font, // font
