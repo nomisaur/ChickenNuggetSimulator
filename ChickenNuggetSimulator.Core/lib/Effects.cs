@@ -3,16 +3,16 @@ using System.IO;
 using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
 
-public class Effect
+public abstract class Effect
 {
-    public bool alive;
+    public bool alive = true;
     public Sprite sprite;
     public float lifespan;
     public float age = 0;
 
-    public float angle;
-    public Action<Effect, GameTime> Update;
-    public Action<Effect, GameTime> Draw;
+    public abstract void Update(GameTime gameTime);
+
+    public abstract void Draw(GameTime gameTime);
 }
 
 public class EffectSystem
@@ -52,7 +52,7 @@ public class EffectSystem
             }
             if (effect.alive)
             {
-                effect.Update(effect, gameTime);
+                effect.Update(gameTime);
             }
         }
     }
@@ -67,7 +67,7 @@ public class EffectSystem
             }
             if (effect.alive)
             {
-                effect.Draw(effect, gameTime);
+                effect.Draw(gameTime);
             }
         }
     }

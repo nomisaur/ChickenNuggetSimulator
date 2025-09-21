@@ -20,6 +20,8 @@ public class CNS : Game
     public new GraphicsDevice GraphicsDevice { get; private set; }
     public SpriteBatch SpriteBatch { get; private set; }
     public new ContentManager Content { get; private set; }
+
+    public Textures textures;
     public Screen Screen;
     public SaveSystem SaveSystem;
     public Input input;
@@ -101,6 +103,8 @@ public class CNS : Game
     protected override void LoadContent()
     {
         base.LoadContent();
+        textures = new Textures(this);
+        textures.LoadTextures();
         chicken = new Chicken(this)
         {
             Position = new Vector2(Screen.Width * 0.5f, Screen.Height * 0.5f),

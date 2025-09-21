@@ -4,6 +4,7 @@ using System.Net.Mail;
 using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace State;
 
@@ -24,80 +25,90 @@ public class Nuggets(CNS game)
     }
 }
 
-public class NuggetEffect(CNS game)
+public class NuggetEffect : Effect
 {
-    public Texture2D NuggetTexture = game.Content.Load<Texture2D>("Assets/Chicken/nugget");
+    public CNS game;
+    public GameTime gameTime;
 
-    public void Update(Effect self, GameTime gameTime)
+    public float angle;
+
+    public NuggetEffect(CNS _game, GameTime _gameTime)
     {
-        self.age += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        game = _game;
+        gameTime = _gameTime;
+        angle = ((float)game.rng.NextDouble() - 0.5f) * 0.8f;
+        lifespan = 0.4f;
+        sprite = new Sprite()
+        {
+            Texture = game.textures.nugget,
+            Position = game.Screen.Center + new Vector2(0, 200),
+            Origin = new Vector2(68, 100),
+            Rotation = angle + 1.5708f + 4.71239f,
+        };
+    }
 
-        float t = MathF.Min(self.age / self.lifespan, 1f);
+    public override void Update(GameTime gameTime)
+    {
+        age += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        float t = MathF.Min(age / lifespan, 1f);
         float easeIn = 1 + t * t;
         float easeOut = 1 - t * t; // quadratic ease-out
-        float newAngle = self.angle * easeIn + 1.5708f;
+        float newAngle = angle * easeIn + 1.5708f;
         float speed = 1300f * easeOut;
         var dir = new Vector2(MathF.Cos(newAngle), MathF.Sin(newAngle));
-        self.sprite.Position += dir * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        self.sprite.Rotation = newAngle + 4.71239f;
-        if (self.age >= self.lifespan)
+        sprite.Position += dir * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        sprite.Rotation = newAngle + 4.71239f;
+        if (age >= lifespan)
         {
-            self.alive = false;
+            alive = false;
         }
     }
 
-    public void Draw(Effect self, GameTime gameTime)
+    public override void Draw(GameTime gameTime)
     {
-        Utils.DrawSprite(game, self.sprite);
+        Utils.DrawSprite(game, sprite);
     }
 
-    public Effect MakeNuggetEffect(GameTime gameTime)
-    {
-        // var angle = 1.4f + (float)game.rng.NextDouble() * (1.8f - 1.4f);
-        var angle = ((float)game.rng.NextDouble() - 0.5f) * 0.8f;
-        return new Effect()
-        {
-            alive = true,
-            lifespan = 0.4f,
-            angle = angle,
-            sprite = new Sprite()
-            {
-                Texture = NuggetTexture,
-                Position = game.Screen.Center + new Vector2(0, 200),
-                Origin = new Vector2(68, 100),
-                Rotation = angle + 1.5708f + 4.71239f,
-            },
-            Update = Update,
-            Draw = Draw,
-        };
-    }
+    // public Effect MakeNuggetEffect(GameTime gameTime)
+    // {
+    //     // var angle = 1.4f + (float)game.rng.NextDouble() * (1.8f - 1.4f);
+    //     var angle = ((float)game.rng.NextDouble() - 0.5f) * 0.8f;
+    //     return new Effect()
+    //     {
+    //         alive = true,
+    //         lifespan = 0.4f,
+    //         angle = angle,
+    //         sprite = new Sprite()
+    //         {
+    //             Texture = game.textures.nugget,
+    //             Position = game.Screen.Center + new Vector2(0, 200),
+    //             Origin = new Vector2(68, 100),
+    //             Rotation = angle + 1.5708f + 4.71239f,
+    //         },
+    //         Update = Update,
+    //         Draw = Draw,
+    //     };
+    // }
 }
 
 public class Chicken
 {
     public CNS game;
     public Sprite Sprite;
-    public Dictionary<string, Texture2D> Textures = new();
     public Vector2 Position = Vector2.Zero;
     public Vector2 Size = new Vector2(600, 600);
     public Vector2 Center => new(Size.X * 0.5f, Size.Y * 0.5f);
     public Rectangle Bounds =>
         new((int)(Position.X - Center.X), (int)(Position.Y - Center.Y), (int)Size.X, (int)Size.Y);
 
-    public NuggetEffect nuggetEffect;
-
     public Chicken(CNS _game)
     {
         game = _game;
-        nuggetEffect = new NuggetEffect(game);
-        Textures["rested"] = game.Content.Load<Texture2D>("Assets/Chicken/Chicken_rested_600");
-        Textures["activated"] = game.Content.Load<Texture2D>(
-            "Assets/Chicken/Chicken_activated_600"
-        );
 
         Sprite = new Sprite()
         {
-            Texture = Textures["rested"],
+            Texture = game.textures.chicken.rested,
             Origin = new Vector2(300, 300),
             Scale = 1.0f,
             SourceRectangle = null,
@@ -106,8 +117,8 @@ public class Chicken
 
     public int Click(GameTime gameTime)
     {
-        Sprite.Texture = Textures["activated"];
-        game.effectSystem.Spawn(nuggetEffect.MakeNuggetEffect(gameTime));
+        Sprite.Texture = game.textures.chicken.activated;
+        game.effectSystem.Spawn(new NuggetEffect(game, gameTime));
         return game.nuggets.add(1);
     }
 
@@ -130,7 +141,7 @@ public class Chicken
         }
         if (input.JustReleased)
         {
-            Sprite.Texture = Textures["rested"];
+            Sprite.Texture = game.textures.chicken.rested;
         }
     }
 
