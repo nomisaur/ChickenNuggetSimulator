@@ -31,19 +31,21 @@ public class NuggetEffect : Effect
     public GameTime gameTime;
 
     public float angle;
+    public float speed;
 
     public NuggetEffect(CNS _game, GameTime _gameTime)
     {
         game = _game;
         gameTime = _gameTime;
-        angle = ((float)game.rng.NextDouble() - 0.5f) * 0.8f;
+        angle = Utils.getRandomBetween(game, -0.4f, 0.4f);
+        speed = Utils.getRandomBetween(game, 1000f, 2000f);
         lifespan = 0.4f;
         sprite = new Sprite()
         {
             Texture = game.textures.nugget,
             Position = game.Screen.Center + new Vector2(0, 200),
             Origin = new Vector2(68, 100),
-            Rotation = angle + 1.5708f + 4.71239f,
+            Rotation = angle,
         };
     }
 
@@ -51,14 +53,21 @@ public class NuggetEffect : Effect
     {
         age += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        float t = MathF.Min(age / lifespan, 1f);
-        float easeIn = 1 + t * t;
-        float easeOut = 1 - t * t; // quadratic ease-out
-        float newAngle = angle * easeIn + 1.5708f;
-        float speed = 1300f * easeOut;
-        var dir = new Vector2(MathF.Cos(newAngle), MathF.Sin(newAngle));
-        sprite.Position += dir * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        sprite.Rotation = newAngle + 4.71239f;
+        float progress = Utils.getProgress(age, lifespan);
+        float tailCutoff = 0.7f;
+        float tailProgress =
+            age > lifespan * tailCutoff
+                ? Utils.getProgress(age - lifespan * tailCutoff, lifespan * (1 - tailCutoff))
+                : 0;
+        float ease = progress * progress;
+        float easeIn = 1 + ease;
+        float easeOut = 1 - ease; // quadratic ease-out
+        float newAngle = angle * easeIn;
+        Vector2 direction = Utils.getDirectionFromAngle(newAngle + Utils.turn.quarter);
+        sprite.Position +=
+            direction * speed * easeOut * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        sprite.Rotation = newAngle;
+        sprite.Color = Color.White * (1 - tailProgress * tailProgress);
         if (age >= lifespan)
         {
             alive = false;

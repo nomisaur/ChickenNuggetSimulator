@@ -1,9 +1,31 @@
+using System;
 using ChickenNuggetSimulator.Core;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 public static class Utils
 {
+    public static readonly (float quarter, float half, float threeQuarter) turn = (
+        1.5708f,
+        3.1415f,
+        4.71239f
+    );
+
+    public static float getRandomBetween(CNS game, float small, float big)
+    {
+        return ((float)game.rng.NextDouble() * (big - small)) + small;
+    }
+
+    public static float getProgress(float age, float lifespan)
+    {
+        return MathF.Min(age / lifespan, 1f);
+    }
+
+    public static Vector2 getDirectionFromAngle(float rad)
+    {
+        return new Vector2(MathF.Cos(rad), MathF.Sin(rad));
+    }
+
     public static void DrawSprite(CNS game, Sprite sprite)
     {
         game.SpriteBatch.Draw(
