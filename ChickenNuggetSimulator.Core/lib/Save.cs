@@ -62,8 +62,6 @@ public class SaveSystem
             baseDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         }
 
-        Console.WriteLine($"dir: {baseDir}");
-
         return Path.Combine(baseDir, Company, Game);
     }
 
@@ -76,7 +74,6 @@ public class SaveSystem
     /// </summary>
     public void Save()
     {
-        Console.WriteLine($"Saving!!!! {data.Nuggets}");
         Directory.CreateDirectory(GetSaveDirectory());
 
         var path = GetSavePath();

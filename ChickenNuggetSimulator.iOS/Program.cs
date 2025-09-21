@@ -58,7 +58,6 @@ namespace ChickenNuggetSimulator.iOS
 
                 if (window2 == null)
                 {
-                    Console.WriteLine("No key window yet; returning zero insets.");
                     return Zero();
                 }
 
@@ -89,11 +88,9 @@ namespace ChickenNuggetSimulator.iOS
 # else
                 UIWindow window = null;
                 window = UIApplication.SharedApplication.KeyWindow;
-                Console.WriteLine("old", UIApplication.SharedApplication.KeyWindow);
 
                 if (window == null)
                 {
-                    Console.WriteLine("WHY IS WINDOW NULL????");
                     return (0, 0, 0, 0);
                 }
 

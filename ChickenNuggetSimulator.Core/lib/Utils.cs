@@ -4,6 +4,21 @@ using MonoGame.Extended;
 
 public static class Utils
 {
+    public static void DrawSprite(CNS game, Sprite sprite)
+    {
+        game.SpriteBatch.Draw(
+            sprite.Texture,
+            sprite.Position,
+            sprite.SourceRectangle,
+            sprite.Color,
+            sprite.Rotation,
+            sprite.Origin,
+            sprite.Scale,
+            sprite.Effects,
+            sprite.LayerDepth
+        );
+    }
+
     public static void DrawSafeArea(CNS game)
     {
         game.SpriteBatch.FillRectangle(

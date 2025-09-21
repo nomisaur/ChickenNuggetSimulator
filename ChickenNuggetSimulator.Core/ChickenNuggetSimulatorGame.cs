@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ChickenNuggetSimulator.Core.Localization;
@@ -20,8 +21,12 @@ public class CNS : Game
     public SpriteBatch SpriteBatch { get; private set; }
     public new ContentManager Content { get; private set; }
     public Screen Screen;
-    public SaveSystem saveSystem;
+    public SaveSystem SaveSystem;
     public Input input;
+
+    public EffectSystem effectSystem;
+
+    public Random rng = new Random();
     public bool firstFrame = true;
 
     public Chicken chicken;
@@ -51,9 +56,9 @@ public class CNS : Game
 
         IsMouseVisible = true;
 
-        saveSystem = new SaveSystem(this);
+        SaveSystem = new SaveSystem(this);
 
-        Deactivated += (_, __) => saveSystem.Save();
+        Deactivated += (_, __) => SaveSystem.Save();
     }
 
     /// <summary>
@@ -86,6 +91,8 @@ public class CNS : Game
         Screen.UpdateScreenScaleMatrix();
 
         input = new Input(this);
+
+        effectSystem = new EffectSystem(this);
     }
 
     /// <summary>
@@ -111,22 +118,17 @@ public class CNS : Game
     /// </param>
     protected override void Update(GameTime gameTime)
     {
-        // Exit the game if the Back button (GamePad) or Escape key (Keyboard) is pressed.
-        if (
-            GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-            || Keyboard.GetState().IsKeyDown(Keys.Escape)
-        )
-            Exit();
-
-        input.Update();
-
-        chicken.Update();
-
         if (firstFrame)
         {
             firstFrame = false;
             Screen.UpdateScreenScaleMatrix();
         }
+
+        input.Update();
+
+        chicken.Update(gameTime);
+
+        effectSystem.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -158,6 +160,7 @@ public class CNS : Game
             layerDepth: 0.0f
         );
 
+        effectSystem.Draw(gameTime);
         chicken.Draw();
         input.Draw();
 

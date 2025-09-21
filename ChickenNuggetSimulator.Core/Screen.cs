@@ -23,6 +23,12 @@ public class Screen(CNS game, int targetWidth, int targetHeight, bool letterboxe
     public readonly int Width = targetWidth;
     public readonly int Height = targetHeight;
 
+    public float CenterX => Width * 0.5f;
+
+    public float CenterY => Height * 0.5f;
+
+    public Vector2 Center => new Vector2(CenterX, CenterY);
+
     public int ActualWidth;
     public int ActualHeight;
     public bool letterboxed = letterboxed;
@@ -68,7 +74,6 @@ public class Screen(CNS game, int targetWidth, int targetHeight, bool letterboxe
 
     private void OnClientSizeChanged(object sender, EventArgs e)
     {
-        Console.WriteLine("OnClientSizeChanged");
         if (
             game.Window.ClientBounds.Width > 0
             && game.Window.ClientBounds.Height > 0
