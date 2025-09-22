@@ -83,7 +83,7 @@ public class NuggetEffect : Effect
 public class Chicken
 {
     public CNS game;
-    public Sprite Sprite;
+    public AnimatedSprite sprite;
     public Vector2 Position = Vector2.Zero;
     public Vector2 Size = new Vector2(600, 600);
     public Vector2 Center => new(Size.X * 0.5f, Size.Y * 0.5f);
@@ -94,19 +94,45 @@ public class Chicken
     {
         game = _game;
         new Rectangle();
+        int size = 700;
 
-        Sprite = new Sprite()
+        sprite = new AnimatedSprite(game)
         {
-            Texture = game.animations.chicken.rested.texture,
-
-            Origin = new Vector2(350, 350),
-            Scale = 1.0f,
+            sprite = new Sprite()
+            {
+                Texture = game.textures.chicken.rested,
+                Origin = new Vector2(350, 350),
+                Scale = 1.0f,
+            },
+            sourceRectangles =
+            [
+                new Rectangle(0, 0, size, size),
+                new Rectangle(700, 0, size, size),
+                new Rectangle(1400, 0, size, size),
+                new Rectangle(2100, 0, size, size),
+                new Rectangle(2800, 0, size, size),
+                new Rectangle(0, 700, size, size),
+                new Rectangle(700, 700, size, size),
+                new Rectangle(1400, 700, size, size),
+                new Rectangle(2100, 700, size, size),
+                new Rectangle(2800, 700, size, size),
+                new Rectangle(0, 1400, size, size),
+                new Rectangle(700, 1400, size, size),
+                new Rectangle(1400, 1400, size, size),
+                new Rectangle(2100, 1400, size, size),
+                new Rectangle(2800, 1400, size, size),
+                new Rectangle(0, 2100, size, size),
+                new Rectangle(700, 2100, size, size),
+                new Rectangle(1400, 2100, size, size),
+                new Rectangle(2100, 2100, size, size),
+                new Rectangle(2800, 2100, size, size),
+            ],
         };
     }
 
     public int Click(GameTime gameTime)
     {
-        Sprite.Texture = game.textures.chicken.activated;
+        // Sprite.Texture = game.textures.chicken.activated;
         game.effectSystem.Spawn(new NuggetEffect(game, gameTime));
         return game.nuggets.add(1);
     }
@@ -130,22 +156,14 @@ public class Chicken
         }
         if (input.JustReleased)
         {
-            Sprite.Texture = game.textures.chicken.rested;
+            // Sprite.Texture = game.textures.chicken.rested;
         }
+        sprite.Update(gameTime);
+        sprite.sprite.Position = Position;
     }
 
     public void Draw()
     {
-        game.SpriteBatch.Draw(
-            game.animations.chicken.rested.texture,
-            Position,
-            game.animations.chicken.rested.sourceRectangles[game.animations.chicken.rested.frame],
-            Sprite.Color,
-            Sprite.Rotation,
-            Sprite.Origin,
-            Sprite.Scale,
-            Sprite.Effects,
-            Sprite.LayerDepth
-        );
+        sprite.Draw();
     }
 }

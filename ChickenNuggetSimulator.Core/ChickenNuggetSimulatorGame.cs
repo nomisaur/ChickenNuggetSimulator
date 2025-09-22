@@ -22,7 +22,6 @@ public class CNS : Game
     public new ContentManager Content { get; private set; }
 
     public Textures textures;
-    public Animations animations;
     public Screen Screen;
     public SaveSystem SaveSystem;
     public Input input;
@@ -106,8 +105,6 @@ public class CNS : Game
         base.LoadContent();
         textures = new Textures(this);
         textures.LoadTextures();
-        animations = new Animations(this);
-        animations.LoadAnimations();
         chicken = new Chicken(this)
         {
             Position = new Vector2(Screen.Width * 0.5f, Screen.Height * 0.5f),
@@ -132,7 +129,6 @@ public class CNS : Game
         }
 
         input.Update();
-        animations.chicken.rested.Update(gameTime);
 
         chicken.Update(gameTime);
 
