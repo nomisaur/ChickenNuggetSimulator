@@ -25,6 +25,9 @@
 /processorParam:TextureFormat=Color
 /build:Assets/background.png
 
+#begin Assets/Chicken/animations.xml
+/copy:Assets/Chicken/animations.xml
+
 #begin Assets/Chicken/Chicken_activated_600.png
 /importer:TextureImporter
 /processor:TextureProcessor
