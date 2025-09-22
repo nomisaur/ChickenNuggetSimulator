@@ -78,27 +78,6 @@ public class NuggetEffect : Effect
     {
         Utils.DrawSprite(game, sprite);
     }
-
-    // public Effect MakeNuggetEffect(GameTime gameTime)
-    // {
-    //     // var angle = 1.4f + (float)game.rng.NextDouble() * (1.8f - 1.4f);
-    //     var angle = ((float)game.rng.NextDouble() - 0.5f) * 0.8f;
-    //     return new Effect()
-    //     {
-    //         alive = true,
-    //         lifespan = 0.4f,
-    //         angle = angle,
-    //         sprite = new Sprite()
-    //         {
-    //             Texture = game.textures.nugget,
-    //             Position = game.Screen.Center + new Vector2(0, 200),
-    //             Origin = new Vector2(68, 100),
-    //             Rotation = angle + 1.5708f + 4.71239f,
-    //         },
-    //         Update = Update,
-    //         Draw = Draw,
-    //     };
-    // }
 }
 
 public class Chicken
@@ -114,13 +93,14 @@ public class Chicken
     public Chicken(CNS _game)
     {
         game = _game;
+        new Rectangle();
 
         Sprite = new Sprite()
         {
-            Texture = game.textures.chicken.rested,
-            Origin = new Vector2(300, 300),
+            Texture = game.animations.chicken.rested.texture,
+
+            Origin = new Vector2(350, 350),
             Scale = 1.0f,
-            SourceRectangle = null,
         };
     }
 
@@ -157,9 +137,9 @@ public class Chicken
     public void Draw()
     {
         game.SpriteBatch.Draw(
-            Sprite.Texture,
+            game.animations.chicken.rested.texture,
             Position,
-            Sprite.SourceRectangle,
+            game.animations.chicken.rested.sourceRectangles[game.animations.chicken.rested.frame],
             Sprite.Color,
             Sprite.Rotation,
             Sprite.Origin,

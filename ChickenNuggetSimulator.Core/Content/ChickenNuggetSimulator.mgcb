@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Chicken/Chicken_activated_600.png
 
+#begin Assets/Chicken/chicken_rested_3500x2800.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Chicken/chicken_rested_3500x2800.png
+
 #begin Assets/Chicken/Chicken_rested_600.png
 /importer:TextureImporter
 /processor:TextureProcessor
